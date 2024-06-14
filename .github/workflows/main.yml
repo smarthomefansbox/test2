@@ -1,0 +1,29 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # 确保获取所有分支的历史
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'smarthomefansbox'
+        git config --global user.email 'zhangjian3120@gmail.com'
+
+    - name: Make changes
+      run: |
+        echo 'some changes' > test.txt
+        git add test.txt
+        git commit -m "Update Supervisor version" || exit 0   # 如果没有变化则不提交
+
+    - name: Push changes
+      run: |
+        git push origin HEAD:${{ github.ref }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
